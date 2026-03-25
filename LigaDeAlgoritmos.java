@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class LigaDeAlgoritmos {
+public class Main {
 
     public static void main(String[] args) {
         System.out.println("\nMaçãs para o Rei I");
@@ -11,7 +11,7 @@ public class LigaDeAlgoritmos {
         System.out.println("\nMaçãs para o Rei II");
         macasParaOReiII();
         System.out.println("\nTrincas");
-        // trincas();
+        trincas();
         System.out.println("\nBolinhas de Gude");
         bolinhasDeGude();
     }
@@ -21,7 +21,7 @@ public class LigaDeAlgoritmos {
 
         int boas = 0;
         for (int i : macas) {
-            boas = (i % 2 == 0) ? boas + 1 : boas + 0;
+            boas = (i % 2 == 0) ? boas + 1 : boas;
             // System.out.printf((i % 2 == 0) ? "Ruim\t%d\n" : "Boa\t%d\n", i);
         }
         System.out.println(boas);
@@ -53,24 +53,21 @@ public class LigaDeAlgoritmos {
 
     private static void trincas() {
         Scanner in = new Scanner(System.in);
-
         String[] inp = new String[3];
-        byte i = 0;
 
-        do {
-            if (i > 2)
-                break;
+        byte i = 0;
+        while (i <= 2) {
             System.out.println("Digite o valor numérico da carta, após o naipe(1,2,3,4)");
             inp[i] = in.nextLine();
             if (inp[i].matches("\\d+\\s+\\d+"))
                 i++;
-        } while (true);
+        }
 
         System.out.println(
                 Arrays.stream(inp)
                         .map(c -> new String[] { c.substring(0, c.indexOf(" ")), c.substring(c.lastIndexOf(" ") - 1) })
                         .collect(Collectors.collectingAndThen(
-                                Collectors.toList(),
+                                Collectors.<String[]>toList(),
                                 list -> {
                                     // retira {num} iguais e conta +1 se n remover
                                     long numDistinct = list.stream().map(arr -> arr[0]).distinct().count();
@@ -98,25 +95,14 @@ public class LigaDeAlgoritmos {
         };
 
         AtomicInteger caixas = new AtomicInteger(0);
-        AtomicInteger counter = new AtomicInteger(1); // loucura poder usar isso finalmente
+        AtomicInteger counter = new AtomicInteger(0);
         Arrays.stream(nums).forEachOrdered(n -> {
-            System.out.printf("Bolinhas: %d\t\tValor: %d\n", n, counter.get());
+            int[] capacidades = {550, 300, 150};
+            int idCaixa = counter.incrementAndGet();
+            System.out.printf("Bolinhas: %d\t\tValor: %d\n", n, idCaixa);
 
-            int[] i = new int[3];
-            switch (counter.getAndIncrement()) {
-                case 1:
-                    i[0] = (int) Math.ceil(550d/n);
-                    break;
-                case 2:
-                    i[1] = (int) Math.ceil(300d/n);
-                    break;
-                case 3:
-                    i[2] = (int) Math.ceil(150d/n);
-                    break;
-            }
-
-            caixas.set(Arrays.stream(i).max().getAsInt());
-
+            int necessarias = (int) Math.ceil((double) n / capacidades[idCaixa-1]);
+            caixas.set(Math.max(caixas.get(), necessarias));
         });
 
         System.out.printf("Serão necessárias %d caixas\n", caixas.get());
