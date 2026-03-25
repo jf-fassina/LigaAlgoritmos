@@ -1,53 +1,55 @@
 import java.io.*;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class Main {
 
     public static void main(String[] args) {
+        String caminhoParc = "src/main/resources/";
         /*System.out.println("\nMaçãs para o Rei I");
         //macasParaOReiI();
         System.out.println("\nMaçãs para o Rei II");
-        //macasParaOReiII();
+        //macasParaOReiII(caminhoParc + "macas_para_o_rei_2.txt");
         System.out.println("\nTrincas");
         //trincas();
         System.out.println("\nBolinhas de Gude");
         //bolinhasDeGude();*/
         System.out.println("\nCódigo Real");
-        codigoReal(lerInput("src/main/resources/codigo_real.txt"));
+        codigoReal(lerInput(caminhoParc + "codigo_real.txt"));
+        //System.out.println("\nElixir Sagrado");
+        //elixirSagrado(lerInput(caminhoParc + "elixir_sagrado.txt"));
     }
 
     private static String lerInput(String caminho) {
 
-        String linha = null;
-        try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
+        StringBuilder input = new StringBuilder();
+
+        try (FileInputStream fis = new FileInputStream(caminho);
+             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(isr)) {
+            String linha = null;
 
             while ((linha = br.readLine()) != null) {
-                linha += linha + "\n";
+                input.append(linha).append("\n");
             }
 
         } catch (IOException e) {
             System.out.println("Erro ao ler o arquivo: " + e.getMessage());
         }
-
-        return linha;
+        return input.toString();
     }
 
 
     private static void macasParaOReiI() {
         int[] macas = {8, 6, 1, 3, 4};
-
         int boas = 0;
-        for (int i : macas) {
-            boas += i%2;
-
-        }
+        for (int i : macas) boas += i % 2;
         System.out.println(boas);
     }
 
-    private static void macasParaOReiII() {
+    private static void macasParaOReiII(String inp) {
         String macas = "746321095467504376567038576861430785761356704135623678495236752793485672934856787496156487135544798" + "4195637894185539859125725611987588562118902781988961310751878521500745819727521976883212020187568899824152127908027" + "2126087010610945781825598802552128451845180142187519829388010612495927505024515575105852562685490445423576982345623" + "4785762348567293845647385764235763457682435672873816457196457139859463587169959978345693476541685961346571374519637" + "4563495136547435613459817346517893456183458934651397485763498563847578643576893476576345761346758879346567365789645" + "7671365713649856734657146375965767834956781436758674356734675637945673457693467563745761346757364563476596437519406" + "757143567143500043561345036745016547613657348563567430567357346576345614037561034560713465710347651";
 
         long boas = macas.chars().filter(i -> Character.getNumericValue(i) % 2 != 0).count();
@@ -106,7 +108,22 @@ public class Main {
 
     private static void codigoReal(String inp) {
 
+        /*
+        Símbolo   Valor
+        !              1
+        @              5
+        (#)           10
+        $             50
+        %            100
+        &            500
+        (* )        1000
+         */
 
+        Map<Character, Integer> tabela = new HashMap<>();
+        char[] simbs = {'!', '@', '#', '$', '%', '&', '*'};
+        //cada id vale 1 5 10 50 100 500 1000
+
+        System.out.println(inp);
     }
 
 
