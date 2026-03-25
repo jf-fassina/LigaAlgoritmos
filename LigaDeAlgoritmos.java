@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class LigaDeAlgoritmos {
@@ -10,7 +11,7 @@ public class LigaDeAlgoritmos {
         System.out.println("\nMaçãs para o Rei II");
         macasParaOReiII();
         System.out.println("\nTrincas");
-        trincas();
+        // trincas();
         System.out.println("\nBolinhas de Gude");
         bolinhasDeGude();
     }
@@ -67,7 +68,7 @@ public class LigaDeAlgoritmos {
 
         System.out.println(
                 Arrays.stream(inp)
-                        .map(c -> new String[] { c.substring(0, c.indexOf(" ")), c.substring(c.lastIndexOf(" ")-15 ) })
+                        .map(c -> new String[] { c.substring(0, c.indexOf(" ")), c.substring(c.lastIndexOf(" ") - 1) })
                         .collect(Collectors.collectingAndThen(
                                 Collectors.toList(),
                                 list -> {
@@ -83,24 +84,43 @@ public class LigaDeAlgoritmos {
     }
 
     private static void bolinhasDeGude() {
-        Scanner in = new Scanner(System.in);
         String inp;
         // 150 G 300 M 550 P = max
-        //in.nextLine();
         do {
             System.out.println("Digite o número de bolinhas Pequenas, Médias e Grandes, respectivamente");
-            inp = in.nextLine();
+            inp = new java.util.Scanner(System.in).nextLine();
         } while (!inp.matches("\\d+\\s+\\d+\\s+\\d+"));
 
         int[] nums = {
-                Integer.parseInt(inp.substring(0, inp.indexOf(" "))),
-                Integer.parseInt(inp.substring(inp.indexOf(" "), inp.lastIndexOf(" "))),
-                Integer.parseInt(inp.substring(inp.lastIndexOf(" ")))
+                Integer.parseInt(inp.substring(0, inp.indexOf(" ")).trim()),
+                Integer.parseInt(inp.substring(inp.indexOf(" "), inp.lastIndexOf(" ")).trim()),
+                Integer.parseInt(inp.substring(inp.lastIndexOf(" ")).trim())
         };
 
-        Arrays.stream(nums).forEachOrdered(n -> System.out.println(n));
+        AtomicInteger caixas = new AtomicInteger(0);
+        AtomicInteger counter = new AtomicInteger(1); // loucura poder usar isso finalmente
+        Arrays.stream(nums).forEachOrdered(n -> {
+            System.out.printf("Bolinhas: %d\t\tValor: %d\n", n, counter.get());
 
-        in.close();
+            int[] i = new int[3];
+            switch (counter.getAndIncrement()) {
+                case 1:
+                    i[0] = (int) Math.ceil(550d/n);
+                    break;
+                case 2:
+                    i[1] = (int) Math.ceil(300d/n);
+                    break;
+                case 3:
+                    i[2] = (int) Math.ceil(150d/n);
+                    break;
+            }
+
+            caixas.set(Arrays.stream(i).max().getAsInt());
+
+        });
+
+        System.out.printf("Serão necessárias %d caixas\n", caixas.get());
+
     }
 
 }
