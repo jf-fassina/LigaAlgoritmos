@@ -7,19 +7,21 @@ import java.util.stream.Collectors;
 public class Main {
 
     public static void main(String[] args) {
+        // TODO--> GUI
         String caminhoParc = "src/main/resources/";
-        /*System.out.println("\nMaçãs para o Rei I");
-        //macasParaOReiI();
-        System.out.println("\nMaçãs para o Rei II");
-        //macasParaOReiII(caminhoParc + "macas_para_o_rei_2.txt");
-        System.out.println("\nTrincas");
-        //trincas();
-        System.out.println("\nBolinhas de Gude");
-        //bolinhasDeGude();*/
-        System.out.println("\nCódigo Real");
-        codigoReal(lerInput(caminhoParc + "codigo_real.txt"));
-        //System.out.println("\nElixir Sagrado");
-        //elixirSagrado(lerInput(caminhoParc + "elixir_sagrado.txt"));
+        // System.out.println("\nMaçãs para o Rei I");
+        // macasParaOReiI();
+        // System.out.println("\nMaçãs para o Rei II");
+        // macasParaOReiII( "macas_para_o_rei_2.txt");
+        // System.out.println("\nTrincas");
+        // trincas();
+        // System.out.println("\nBolinhas de Gude");
+        // bolinhasDeGude();
+        // System.out.println("\nCódigo Real");
+        // codigoReal(lerInput(caminhho + "codigo_real.txt"));
+
+        System.out.println("\nElixir Sagrado");
+        elixirSagrado(lerInput("elixir_sagrado.txt"));
     }
 
     private static String lerInput(String caminho) {
@@ -27,8 +29,8 @@ public class Main {
         StringBuilder input = new StringBuilder();
 
         try (FileInputStream fis = new FileInputStream(caminho);
-             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
-             BufferedReader br = new BufferedReader(isr)) {
+                InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                BufferedReader br = new BufferedReader(isr)) {
             String linha = null;
 
             while ((linha = br.readLine()) != null) {
@@ -41,19 +43,34 @@ public class Main {
         return input.toString();
     }
 
+    private static List<String> quebraLinha(String inp) {
+        List<String> str = new ArrayList<String>();
+        String buffer = "";
+        for (int i = 0; i < inp.length(); i++) {
+            if (inp.charAt(i) != '\n')
+                buffer += inp.charAt(i);
+            else {
+                str.add(buffer);
+                buffer = "";
+            }
+        }
+
+        return str;
+    }
 
     private static void macasParaOReiI() {
-        int[] macas = {8, 6, 1, 3, 4};
+        int[] macas = { 8, 6, 1, 3, 4 };
         int boas = 0;
-        for (int i : macas) boas += i % 2;
+        for (int i : macas)
+            boas += i % 2;
         System.out.println(boas);
     }
 
     private static void macasParaOReiII(String inp) {
-        String macas = "746321095467504376567038576861430785761356704135623678495236752793485672934856787496156487135544798" + "4195637894185539859125725611987588562118902781988961310751878521500745819727521976883212020187568899824152127908027" + "2126087010610945781825598802552128451845180142187519829388010612495927505024515575105852562685490445423576982345623" + "4785762348567293845647385764235763457682435672873816457196457139859463587169959978345693476541685961346571374519637" + "4563495136547435613459817346517893456183458934651397485763498563847578643576893476576345761346758879346567365789645" + "7671365713649856734657146375965767834956781436758674356734675637945673457693467563745761346757364563476596437519406" + "757143567143500043561345036745016547613657348563567430567357346576345614037561034560713465710347651";
 
-        long boas = macas.chars().filter(i -> Character.getNumericValue(i) % 2 != 0).count();
-        System.out.println(boas);
+        String macas = lerInput(inp).toString();
+
+        System.out.println(macas.chars().filter(i -> Character.getNumericValue(i) % 2 != 0).count());
         // macas.chars().forEach(i -> System.out.printf((Character.getNumericValue(i) %
         // 2 == 0) ? "Ruim\t%c\n" : "Boa\t%c\n", i));
 
@@ -67,17 +84,20 @@ public class Main {
         while (i <= 2) {
             System.out.println("Digite o valor numérico da carta, após o naipe(1,2,3,4)");
             inp[i] = in.nextLine();
-            if (inp[i].matches("\\d+\\s+\\d+")) i++;
+            if (inp[i].matches("\\d+\\s+\\d+"))
+                i++;
         }
 
-        System.out.println(Arrays.stream(inp).map(c -> new String[]{c.substring(0, c.indexOf(" ")), c.substring(c.lastIndexOf(" ") - 1)}).collect(Collectors.collectingAndThen(Collectors.<String[]>toList(), list -> {
-            // retira {num} iguais e conta +1 se n remover
-            long numDistinct = list.stream().map(arr -> arr[0]).distinct().count();
-            // retira {naipe} iguais e conta +1 se n remover
-            long naipeDistinct = list.stream().map(arr -> arr[1]).distinct().count();
-            return numDistinct == 1 && naipeDistinct == list.size();
-            // true se nums unicos = 1 e naipes = 3 (todos)
-        })) ? "É Trinca" : "Não é trinca");
+        System.out.println(Arrays.stream(inp)
+                .map(c -> new String[] { c.substring(0, c.indexOf(" ")), c.substring(c.lastIndexOf(" ") - 1) })
+                .collect(Collectors.collectingAndThen(Collectors.<String[]>toList(), list -> {
+                    // retira {num} iguais e conta +1 se n remover
+                    long numDistinct = list.stream().map(arr -> arr[0]).distinct().count();
+                    // retira {naipe} iguais e conta +1 se n remover
+                    long naipeDistinct = list.stream().map(arr -> arr[1]).distinct().count();
+                    return numDistinct == 1 && naipeDistinct == list.size();
+                    // true se nums unicos = 1 e naipes = 3 (todos)
+                })) ? "É Trinca" : "Não é trinca");
         in.close();
     }
 
@@ -89,12 +109,14 @@ public class Main {
             inp = new java.util.Scanner(System.in).nextLine();
         } while (!inp.matches("\\d+\\s+\\d+\\s+\\d+"));
 
-        int[] nums = {Integer.parseInt(inp.substring(0, inp.indexOf(" ")).trim()), Integer.parseInt(inp.substring(inp.indexOf(" "), inp.lastIndexOf(" ")).trim()), Integer.parseInt(inp.substring(inp.lastIndexOf(" ")).trim())};
+        int[] nums = { Integer.parseInt(inp.substring(0, inp.indexOf(" ")).trim()),
+                Integer.parseInt(inp.substring(inp.indexOf(" "), inp.lastIndexOf(" ")).trim()),
+                Integer.parseInt(inp.substring(inp.lastIndexOf(" ")).trim()) };
 
         AtomicInteger caixas = new AtomicInteger(0);
         AtomicInteger counter = new AtomicInteger(0);
         Arrays.stream(nums).forEachOrdered(n -> {
-            int[] capacidades = {550, 300, 150};
+            int[] capacidades = { 550, 300, 150 };
             int idCaixa = counter.incrementAndGet();
             System.out.printf("Bolinhas: %d\t\tValor: %d\n", n, idCaixa);
 
@@ -108,23 +130,115 @@ public class Main {
 
     private static void codigoReal(String inp) {
 
-        /*
-        Símbolo   Valor
-        !              1
-        @              5
-        (#)           10
-        $             50
-        %            100
-        &            500
-        (* )        1000
-         */
-
         Map<Character, Integer> tabela = new HashMap<>();
-        char[] simbs = {'!', '@', '#', '$', '%', '&', '*'};
-        //cada id vale 1 5 10 50 100 500 1000
+        tabela.put('!', 1);
+        tabela.put('@', 5);
+        tabela.put('#', 10);
+        tabela.put('$', 50);
+        tabela.put('%', 100);
+        tabela.put('&', 500);
+        tabela.put('*', 1000);
+        // &%%%##@
 
-        System.out.println(inp);
+        List<String> cod = quebraLinha(inp);
+        long[] num = new long[cod.size()];
+        int k = 0;
+
+        for (String i : cod) {
+            System.out.println("-----------------------------------------------------");
+            for (int j = 0; j < i.length(); j++) {
+                if (tabela.containsKey(i.charAt(j))) {
+                    int atual = tabela.get(i.charAt(j));
+                    // System.out.println(atual);
+
+                    if (j != (i.length() - 1)) {
+                        int prox = tabela.get(i.charAt(j + 1));
+                        if (prox > atual) {
+                            num[k] -= atual;
+                        } else {
+                            num[k] += atual;
+                        }
+                    } else {
+                        num[k] += atual;
+                    }
+                    System.out.println("Linha " + (k + 1) + ": " + num[k]);
+
+                }
+                // System.out.println(num[j]);
+            }
+            k++;
+        }
+        long resultado = 0;
+        for (long i : num) {
+            resultado += i;
+        }
+
+        System.out.println(resultado);
     }
 
+    private static void elixirSagrado(String inp) {
+
+        /*
+         * Mexer em sentido horário (addx): Adicionando sal ou açúcar enquanto mexe,
+         * aumentando ou diminuindo a DENSIDADE. O número após o addx representa o valor
+         * que você deve adicionar à densidade (positivo para sal, negativo para
+         * açúcar). Esta ação demora 2 ciclos.
+         * 
+         * Mexer em sentido anti-horário (noop): Sem adicionar sal ou açúcar. Esta ação
+         * demora 1 ciclo.
+         * 
+         * Cálculo do Sinal: Para verificar se o processo está correto, você deve
+         * calcular o "sinal" em ciclos específicos: 20, 60, 100, 140, 180 e 220. O
+         * sinal de um ciclo é o resultado da multiplicação do número do ciclo pelo
+         * valor da densidade no INÍCIO desse ciclo. Ao final, some todos esses valores.
+         * 
+         * Exemplo de validação:
+         * 
+         * Ciclo 20: Densidade 21 -> 20 * 21 = 420
+         * 
+         * Ciclo 60: Densidade 19 -> 60 * 19 = 1140
+         * 
+         * Ciclo 100: Densidade 18 -> 100 * 18 = 1800
+         * 
+         * Ciclo 140: Densidade 21 -> 140 * 21 = 2940
+         * 
+         * Ciclo 180: Densidade 16 -> 180 * 16 = 2880
+         * 
+         * Ciclo 220: Densidade 18 -> 220 * 18 = 3960
+         * 
+         * Soma total: 13140.
+         * 
+         */
+
+        String[] cod = quebraLinha(inp).toArray(new String[0]);
+
+        AtomicInteger dens = new AtomicInteger(1);
+        AtomicInteger ciclo = new AtomicInteger(0);
+
+        Arrays.stream(cod).forEachOrdered(c -> {
+
+            if (c.contains("noop")) {
+                System.out.printf("\nCiclo %d \tAção: noop", ciclo.getAndAdd(1));
+                if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140
+                        || ciclo.get() == 180 || ciclo.get() == 220) {
+                    System.out.printf("\n%d\n", (ciclo.get() * dens.get()));
+                }
+            } else {
+                System.out.printf("\nCiclo %d \tAção: addx", ciclo.getAndAdd(2));
+
+                System.out.printf(" %d", dens.addAndGet(Integer.parseInt(c.substring(c.indexOf(" ") + 1))));
+
+
+                //for (int i = ciclo.get(); i <= ciclo.get(); i++) {
+                    if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140
+                            || ciclo.get() == 180 || ciclo.get() == 220) {
+                        System.out.printf("\n\n%d\n", (ciclo.get() * dens.get()));
+                    //}
+                }
+            }
+
+        });
+
+    }
 
 }
