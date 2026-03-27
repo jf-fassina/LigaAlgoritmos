@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class Main {
+public class LigaDeAlgoritmos {
 
     public static void main(String[] args) {
         // TODO--> GUI
@@ -21,7 +21,7 @@ public class Main {
         // codigoReal(lerInput(caminhho + "codigo_real.txt"));
 
         System.out.println("\nElixir Sagrado");
-        elixirSagrado(lerInput("elixir_sagrado.txt"));
+        elixirSagrado(lerInput(/*caminho + */"elixir_sagrado.txt"));
     }
 
     private static String lerInput(String caminho) {
@@ -214,31 +214,30 @@ public class Main {
 
         AtomicInteger dens = new AtomicInteger(1);
         AtomicInteger ciclo = new AtomicInteger(0);
+        AtomicInteger soma = new AtomicInteger(0);
 
         Arrays.stream(cod).forEachOrdered(c -> {
 
+            for (int i = 0; i < 2;){
+            if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140
+                        || ciclo.get() == 180 || ciclo.get() == 220) {
+                    soma.addAndGet(ciclo.get() * dens.get());
+                }
+            
             if (c.contains("noop")) {
                 System.out.printf("\nCiclo %d \tAção: noop", ciclo.getAndAdd(1));
-                if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140
-                        || ciclo.get() == 180 || ciclo.get() == 220) {
-                    System.out.printf("\n%d\n", (ciclo.get() * dens.get()));
-                }
+                i = 2;
             } else {
-                System.out.printf("\nCiclo %d \tAção: addx", ciclo.getAndAdd(2));
+                System.out.printf("\nCiclo %d \tAção: addx", ciclo.getAndAdd(1));
 
-                System.out.printf(" %d", dens.addAndGet(Integer.parseInt(c.substring(c.indexOf(" ") + 1))));
+                if(i == 1)System.out.printf(" %d", dens.addAndGet(Integer.parseInt(c.substring(c.indexOf(" ") + 1))));
 
-
-                //for (int i = ciclo.get(); i <= ciclo.get(); i++) {
-                    if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140
-                            || ciclo.get() == 180 || ciclo.get() == 220) {
-                        System.out.printf("\n\n%d\n", (ciclo.get() * dens.get()));
-                    //}
+                i++;
                 }
             }
-
+        
         });
-
+        System.out.printf("\nResultado da soma eh %d",soma.get());
     }
 
 }
