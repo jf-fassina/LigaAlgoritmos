@@ -213,7 +213,7 @@ public class LigaDeAlgoritmos {
         String[] cod = quebraLinha(inp).toArray(new String[0]);
 
         AtomicInteger dens = new AtomicInteger(1);
-        AtomicInteger ciclo = new AtomicInteger(0);
+        AtomicInteger ciclo = new AtomicInteger(1);
         AtomicInteger soma = new AtomicInteger(0);
 
         Arrays.stream(cod).forEachOrdered(c -> {
@@ -229,7 +229,7 @@ public class LigaDeAlgoritmos {
                 i = 2;
             } else {
                 System.out.printf("\nCiclo %d \tAção: addx", ciclo.getAndAdd(1));
-
+    
                 if(i == 1)System.out.printf(" %d", dens.addAndGet(Integer.parseInt(c.substring(c.indexOf(" ") + 1))));
 
                 i++;
@@ -237,7 +237,7 @@ public class LigaDeAlgoritmos {
             }
         
         });
-        System.out.printf("\nResultado da soma eh %d",soma.get());
+        System.out.printf("\nResultado da soma eh %d", soma.get());
     }
 
 }
