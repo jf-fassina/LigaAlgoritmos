@@ -18,10 +18,12 @@ public class LigaDeAlgoritmos {
         // System.out.println("\nBolinhas de Gude");
         // bolinhasDeGude();
         // System.out.println("\nCódigo Real");
-        // codigoReal(lerInput(caminhho + "codigo_real.txt"));
-
-        System.out.println("\nElixir Sagrado");
-        elixirSagrado(lerInput(/*caminho + */"elixir_sagrado.txt"));
+        // codigoReal(lerInput(caminho + "codigo_real.txt"));
+        //System.out.println("\nElixir Sagrado");
+        //elixirSagrado(lerInput(/*caminho + */"elixir_sagrado.txt"));
+        //System.out.println("\nO Enigma da Piramide");
+        //enigmaPiramide("n=342");
+        aHorda(lerInput(/*caminho + */"a_horda_input.txt"));
     }
 
     private static String lerInput(String caminho) {
@@ -29,8 +31,8 @@ public class LigaDeAlgoritmos {
         StringBuilder input = new StringBuilder();
 
         try (FileInputStream fis = new FileInputStream(caminho);
-                InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
-                BufferedReader br = new BufferedReader(isr)) {
+             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(isr)) {
             String linha = null;
 
             while ((linha = br.readLine()) != null) {
@@ -183,31 +185,31 @@ public class LigaDeAlgoritmos {
          * aumentando ou diminuindo a DENSIDADE. O número após o addx representa o valor
          * que você deve adicionar à densidade (positivo para sal, negativo para
          * açúcar). Esta ação demora 2 ciclos.
-         * 
+         *
          * Mexer em sentido anti-horário (noop): Sem adicionar sal ou açúcar. Esta ação
          * demora 1 ciclo.
-         * 
+         *
          * Cálculo do Sinal: Para verificar se o processo está correto, você deve
          * calcular o "sinal" em ciclos específicos: 20, 60, 100, 140, 180 e 220. O
          * sinal de um ciclo é o resultado da multiplicação do número do ciclo pelo
          * valor da densidade no INÍCIO desse ciclo. Ao final, some todos esses valores.
-         * 
+         *
          * Exemplo de validação:
-         * 
+         *
          * Ciclo 20: Densidade 21 -> 20 * 21 = 420
-         * 
+         *
          * Ciclo 60: Densidade 19 -> 60 * 19 = 1140
-         * 
+         *
          * Ciclo 100: Densidade 18 -> 100 * 18 = 1800
-         * 
+         *
          * Ciclo 140: Densidade 21 -> 140 * 21 = 2940
-         * 
+         *
          * Ciclo 180: Densidade 16 -> 180 * 16 = 2880
-         * 
+         *
          * Ciclo 220: Densidade 18 -> 220 * 18 = 3960
-         * 
+         *
          * Soma total: 13140.
-         * 
+         *
          */
 
         String[] cod = quebraLinha(inp).toArray(new String[0]);
@@ -219,25 +221,71 @@ public class LigaDeAlgoritmos {
         Arrays.stream(cod).forEachOrdered(c -> {
 
             for (int i = 0; i < 2;){
-            if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140
+                if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140
                         || ciclo.get() == 180 || ciclo.get() == 220) {
                     soma.addAndGet(ciclo.get() * dens.get());
                 }
-            
-            if (c.contains("noop")) {
-                System.out.printf("\nCiclo %d \tAção: noop", ciclo.getAndAdd(1));
-                i = 2;
-            } else {
-                System.out.printf("\nCiclo %d \tAção: addx", ciclo.getAndAdd(1));
-    
-                if(i == 1)System.out.printf(" %d", dens.addAndGet(Integer.parseInt(c.substring(c.indexOf(" ") + 1))));
 
-                i++;
+                if (c.contains("noop")) {
+                    System.out.printf("\nCiclo %d \tAção: noop", ciclo.getAndAdd(1));
+                    i = 2;
+                } else {
+                    System.out.printf("\nCiclo %d \tAção: addx", ciclo.getAndAdd(1));
+
+                    if(i == 1)System.out.printf(" %d", dens.addAndGet(Integer.parseInt(c.substring(c.indexOf(" ") + 1))));
+
+                    i++;
                 }
             }
-        
+
         });
         System.out.printf("\nResultado da soma eh %d", soma.get());
+    }
+
+    private static void enigmaPiramide(String inp){
+        //n=342
+    int h = Integer.parseInt(inp.substring(inp.lastIndexOf("=")+1).trim()) ;
+    int n = 1;
+    int soma =0;
+    String prt = "";
+    //1
+        //22
+        // 333
+
+        for (int i = 0; i < h; i++){
+            for (int j = 0; j < n; j++){
+                prt += String.valueOf(n) + " ";
+
+            }
+            System.out.println(prt + " soma: " + n*n);
+            soma += n*n;
+            prt = "";
+            n++;
+        }
+        System.out.println(soma);
+
+        //soma dos números de cada nível e imprimir esse resultado exatamente ao lado da linha correspondente.
+    }
+
+    private static void aHorda(String inp){
+        String[] tabela = Arrays.stream(inp.split(" "))
+                .toArray(String[]::new);
+/*
+* DMAYP
+CABSE
+KBLGW
+DZAVS
+NRXQJ
+RVUTQ
+AOGFJ
+HAXOW
+KCVIG
+KCVLE
+* */
+        for(String s : tabela){
+            System.out.println(s);
+        }
+
     }
 
 }
