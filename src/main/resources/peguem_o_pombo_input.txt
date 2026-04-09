@@ -1,0 +1,60 @@
+Válvula XB tem fluxo de 0 ulpg/min; passagens secretas para válvulas YV, RP
+Válvula VN tem fluxo de 0 ulpg/min; passagens secretas para válvulas WL, ET
+Válvula NT tem fluxo de 0 ulpg/min; passagens secretas para válvulas CU, MQ
+Válvula ON tem fluxo de 0 ulpg/min; passagens secretas para válvulas AA, FP
+Válvula CW tem fluxo de 0 ulpg/min; passagens secretas para válvulas UH, WY
+Válvula KN tem fluxo de 0 ulpg/min; passagens secretas para válvulas JL, MQ
+Válvula VT tem fluxo de 0 ulpg/min; passagens secretas para válvulas CU, UI
+Válvula CR tem fluxo de 0 ulpg/min; passagens secretas para válvulas OA, QQ
+Válvula YX tem fluxo de 0 ulpg/min; passagens secretas para válvulas YJ, CI
+Válvula WL tem fluxo de 7 ulpg/min; passagens secretas para válvulas OQ, VN, PU, VF, UA
+Válvula HV tem fluxo de 0 ulpg/min; passagens secretas para válvulas OQ, OK
+Válvula JM tem fluxo de 21 ulpg/min; passagens secretas para válvulas RG, OH, JE
+Válvula XF tem fluxo de 24 ulpg/min; passagens secretas para válvulas OL, TM
+Válvula VD tem fluxo de 0 ulpg/min; passagens secretas para válvulas MY, OK
+Válvula AA tem fluxo de 0 ulpg/min; passagens secretas para válvulas KO, ON, UI, QE, VF
+Válvula JE tem fluxo de 0 ulpg/min; passagens secretas para válvulas JM, NZ
+Válvula UN tem fluxo de 0 ulpg/min; passagens secretas para válvulas UA, WY
+Válvula CC tem fluxo de 0 ulpg/min; passagens secretas para válvulas IV, CU
+Válvula PU tem fluxo de 0 ulpg/min; passagens secretas para válvulas JL, WL
+Válvula UA tem fluxo de 0 ulpg/min; passagens secretas para válvulas WL, UN
+Válvula OJ tem fluxo de 13 ulpg/min; passagens secretas para válvulas AZ, FP, MY, OL, ET
+Válvula CJ tem fluxo de 0 ulpg/min; passagens secretas para válvulas MQ, WS
+Válvula IV tem fluxo de 0 ulpg/min; passagens secretas para válvulas NZ, CC
+Válvula NZ tem fluxo de 4 ulpg/min; passagens secretas para válvulas WS, IV, IU, EQ, JE
+Válvula TM tem fluxo de 0 ulpg/min; passagens secretas para válvulas HL, XF
+Válvula SG tem fluxo de 0 ulpg/min; passagens secretas para válvulas MQ, OH
+Válvula QQ tem fluxo de 12 ulpg/min; passagem secreta para válvula CR
+Válvula WX tem fluxo de 15 ulpg/min; passagens secretas para válvulas CI, SN
+Válvula VF tem fluxo de 0 ulpg/min; passagens secretas para válvulas WL, AA
+Válvula RP tem fluxo de 0 ulpg/min; passagens secretas para válvulas WY, XB
+Válvula SN tem fluxo de 0 ulpg/min; passagens secretas para válvulas WX, OI
+Válvula HL tem fluxo de 0 ulpg/min; passagens secretas para válvulas OK, TM
+Válvula ET tem fluxo de 0 ulpg/min; passagens secretas para válvulas OJ, VN
+Válvula UI tem fluxo de 0 ulpg/min; passagens secretas para válvulas AA, VT
+Válvula FP tem fluxo de 0 ulpg/min; passagens secretas para válvulas ON, OJ
+Válvula IU tem fluxo de 0 ulpg/min; passagens secretas para válvulas NZ, QE
+Válvula JQ tem fluxo de 0 ulpg/min; passagens secretas para válvulas HR, CU
+Válvula CU tem fluxo de 5 ulpg/min; passagens secretas para válvulas NT, VT, JQ, CC
+Válvula WY tem fluxo de 19 ulpg/min; passagens secretas para válvulas CW, UN, RP
+Válvula YJ tem fluxo de 16 ulpg/min; passagem secreta para válvula YX
+Válvula HR tem fluxo de 0 ulpg/min; passagens secretas para válvulas JQ, JL
+Válvula RM tem fluxo de 11 ulpg/min; passagens secretas para válvulas OI, AZ
+Válvula RG tem fluxo de 0 ulpg/min; passagens secretas para válvulas YV, JM
+Válvula MY tem fluxo de 0 ulpg/min; passagens secretas para válvulas VD, OJ
+Válvula QE tem fluxo de 0 ulpg/min; passagens secretas para válvulas AA, IU
+Válvula OK tem fluxo de 17 ulpg/min; passagens secretas para válvulas HL, UH, VD, HV
+Válvula CI tem fluxo de 0 ulpg/min; passagens secretas para válvulas WX, YX
+Válvula OL tem fluxo de 0 ulpg/min; passagens secretas para válvulas XF, OJ
+Válvula WS tem fluxo de 0 ulpg/min; passagens secretas para válvulas CJ, NZ
+Válvula OH tem fluxo de 0 ulpg/min; passagens secretas para válvulas JM, SG
+Válvula OQ tem fluxo de 0 ulpg/min; passagens secretas para válvulas WL, HV
+Válvula OA tem fluxo de 0 ulpg/min; passagens secretas para válvulas CR, MQ
+Válvula OI tem fluxo de 0 ulpg/min; passagens secretas para válvulas SN, RM
+Válvula YV tem fluxo de 25 ulpg/min; passagens secretas para válvulas RG, XB
+Válvula JL tem fluxo de 3 ulpg/min; passagens secretas para válvulas KO, HR, PU, KN, EQ
+Válvula AZ tem fluxo de 0 ulpg/min; passagens secretas para válvulas OJ, RM
+Válvula UH tem fluxo de 0 ulpg/min; passagens secretas para válvulas CW, OK
+Válvula KO tem fluxo de 0 ulpg/min; passagens secretas para válvulas AA, JL
+Válvula EQ tem fluxo de 0 ulpg/min; passagens secretas para válvulas NZ, JL
+Válvula MQ tem fluxo de 10 ulpg/min; passagens secretas para válvulas CJ, OA, NT, SG, KN
