@@ -1,4 +1,3 @@
-package fassina;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -8,9 +7,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class LigaDeAlgoritmos {
-
     public static void main(String[] args) {
         // TODO--> GUI
         String caminhoParc = "src/main/resources/";
@@ -28,7 +28,8 @@ public class LigaDeAlgoritmos {
         //elixirSagrado(lerInput(/*caminho + */"elixir_sagrado.txt"));
         //System.out.println("\nO Enigma da Piramide");
         //enigmaPiramide("n=342");
-        aHorda(lerInput(/*caminho + */"a_horda_input.txt"));
+        //aHorda(lerInput(/*caminho + */"a_horda_input.txt"));
+        peguemOPombo(lerInput("peguem_o_pombo_input.txt"));
     }
 
     private static String lerInput(String caminho) {
@@ -92,13 +93,13 @@ public class LigaDeAlgoritmos {
         }
 
         System.out.println(Arrays.stream(inp).map(c -> new String[]{c.substring(0, c.indexOf(" ")), c.substring(c.lastIndexOf(" ") - 1)}).collect(Collectors.collectingAndThen(Collectors.<String[]>toList(), list -> {
-            // retira {num} iguais e conta +1 se n remover
-            long numDistinct = list.stream().map(arr -> arr[0]).distinct().count();
-            // retira {naipe} iguais e conta +1 se n remover
-            long naipeDistinct = list.stream().map(arr -> arr[1]).distinct().count();
-            return numDistinct == 1 && naipeDistinct == list.size();
-            // true se nums unicos = 1 e naipes = 3 (todos)
-        })) ? "É Trinca" : "Não é trinca");
+                            // retira {num} iguais e conta +1 se n remover
+                            long numDistinct = list.stream().map(arr -> arr[0]).distinct().count();
+                            // retira {naipe} iguais e conta +1 se n remover
+                            long naipeDistinct = list.stream().map(arr -> arr[1]).distinct().count();
+                            return numDistinct == 1 && naipeDistinct == list.size();
+                            // true se nums unicos = 1 e naipes = 3 (todos)
+                    })) ? "É Trinca" : "Não é trinca");
         in.close();
     }
 
@@ -115,13 +116,13 @@ public class LigaDeAlgoritmos {
         AtomicInteger caixas = new AtomicInteger(0);
         AtomicInteger counter = new AtomicInteger(0);
         Arrays.stream(nums).forEachOrdered(n -> {
-            int[] capacidades = {550, 300, 150};
-            int idCaixa = counter.incrementAndGet();
-            System.out.printf("Bolinhas: %d\t\tValor: %d\n", n, idCaixa);
+                    int[] capacidades = {550, 300, 150};
+                    int idCaixa = counter.incrementAndGet();
+                    System.out.printf("Bolinhas: %d\t\tValor: %d\n", n, idCaixa);
 
-            int necessarias = (int) Math.ceil((double) n / capacidades[idCaixa - 1]);
-            caixas.set(Math.max(caixas.get(), necessarias));
-        });
+                    int necessarias = (int) Math.ceil((double) n / capacidades[idCaixa - 1]);
+                    caixas.set(Math.max(caixas.get(), necessarias));
+            });
 
         System.out.printf("Serão necessárias %d caixas\n", caixas.get());
 
@@ -217,25 +218,25 @@ public class LigaDeAlgoritmos {
 
         Arrays.stream(cod).forEachOrdered(c -> {
 
-            for (int i = 0; i < 2; ) {
-                if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140 || ciclo.get() == 180 || ciclo.get() == 220) {
-                    soma.addAndGet(ciclo.get() * dens.get());
-                }
+                    for (int i = 0; i < 2; ) {
+                        if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140 || ciclo.get() == 180 || ciclo.get() == 220) {
+                            soma.addAndGet(ciclo.get() * dens.get());
+                        }
 
-                if (c.contains("noop")) {
-                    System.out.printf("\nCiclo %d \tAção: noop", ciclo.getAndAdd(1));
-                    i = 2;
-                } else {
-                    System.out.printf("\nCiclo %d \tAção: addx", ciclo.getAndAdd(1));
+                        if (c.contains("noop")) {
+                            System.out.printf("\nCiclo %d \tAção: noop", ciclo.getAndAdd(1));
+                            i = 2;
+                        } else {
+                            System.out.printf("\nCiclo %d \tAção: addx", ciclo.getAndAdd(1));
 
-                    if (i == 1)
-                        System.out.printf(" %d", dens.addAndGet(Integer.parseInt(c.substring(c.indexOf(" ") + 1))));
+                            if (i == 1)
+                                System.out.printf(" %d", dens.addAndGet(Integer.parseInt(c.substring(c.indexOf(" ") + 1))));
 
-                    i++;
-                }
-            }
+                            i++;
+                        }
+                    }
 
-        });
+            });
         System.out.printf("\nResultado da soma eh %d", soma.get());
     }
 
@@ -273,9 +274,7 @@ public class LigaDeAlgoritmos {
 
     }
 
-
     private static void peguemOPombo(String inp) {
-
         /*
         30 minutos pelo Pombo
         válvulas (que liberariam a pressão do gás para a parte externa)
@@ -283,135 +282,169 @@ public class LigaDeAlgoritmos {
 
         Por exemplo, se no papel tivesse escrito:
 
+        Válvula AA tem fluxo de 0 ulpg/min; passagens secretas para válvulas DD, II, BB
+        Válvula BB tem fluxo de 13 ulpg/min; passagens secretas para válvulas CC, AA
+        Válvula CC tem fluxo de 2 ulpg/min; passagens secretas para válvulas DD, BB
+        Válvula DD tem fluxo de 20 ulpg/min; passagens secretas para válvulas CC, AA, EE
+        Válvula EE tem fluxo de 3 ulpg/min; passagens secretas para válvulas FF, DD
+        Válvula FF tem fluxo de 0 ulpg/min; passagens secretas para válvulas EE, GG
+        Válvula GG tem fluxo de 0 ulpg/min; passagens secretas para válvulas FF, HH
+        Válvula HH tem fluxo de 22 ulpg/min; passagem secreta pra válvula GG
+        Válvula II tem fluxo de 0 ulpg/min; passagens secretas para válvulas AA, JJ
+        Válvula JJ tem fluxo de 21 ulpg/min; passagem secreta pra válvula II
 
-Válvula AA tem fluxo de 0 ulpg/min; passagens secretas para válvulas DD, II, BB
-Válvula BB tem fluxo de 13 ulpg/min; passagens secretas para válvulas CC, AA
-Válvula CC tem fluxo de 2 ulpg/min; passagens secretas para válvulas DD, BB
-Válvula DD tem fluxo de 20 ulpg/min; passagens secretas para válvulas CC, AA, EE
-Válvula EE tem fluxo de 3 ulpg/min; passagens secretas para válvulas FF, DD
-Válvula FF tem fluxo de 0 ulpg/min; passagens secretas para válvulas EE, GG
-Válvula GG tem fluxo de 0 ulpg/min; passagens secretas para válvulas FF, HH
-Válvula HH tem fluxo de 22 ulpg/min; passagem secreta pra válvula GG
-Válvula II tem fluxo de 0 ulpg/min; passagens secretas para válvulas AA, JJ
-Válvula JJ tem fluxo de 21 ulpg/min; passagem secreta pra válvula II
+        Todas as válvulas começam inicialmente fechadas
 
-Todas as válvulas começam inicialmente fechadas
+        leva 1 minuto para atravessar uma passagem) e ir para a válvula BB, e abrí-la (também leva 1 minuto para abrir uma válvula).
+        Agora a válvula BB estará aberta pelos próximos 28 minutos, resultando em uma liberação de 364ulpg (28 * 13 = 364).
+        Dick agora tem alguma esperança de que seja possível escapar da armadilha do Pombo, porém ele não faz a menor ideia de como ele pode fazer isso nos 30 minutos da melhor forma possível.
 
-leva 1 minuto para atravessar uma passagem) e ir para a válvula BB, e abrí-la (também leva 1 minuto para abrir uma válvula).
-Agora a válvula BB estará aberta pelos próximos 28 minutos, resultando em uma liberação de 364ulpg (28 * 13 = 364).
-Dick agora tem alguma esperança de que seja possível escapar da armadilha do Pombo, porém ele não faz a menor ideia de como ele pode fazer isso nos 30 minutos da melhor forma possível.
+        Dick agora tem alguma esperança de que seja possível escapar da armadilha do Pombo, porém ele não faz a menor ideia de como ele pode fazer isso nos 30 minutos da melhor forma possível.
 
-Dick agora tem alguma esperança de que seja possível escapar da armadilha do Pombo, porém ele não faz a menor ideia de como ele pode fazer isso nos 30 minutos da melhor forma possível.
+        Nessa caso, a melhor sequência de decisões seria:
 
+        == Minuto 1 ==
+        Nenhuma válvulas está aberta.
+        Dick se move para válvula DD.
+        == Minuto 2 ==
+        Nenhuma válvula está aberta.
+        Dick abre a válvula DD.
+        == Minuto 3 ==
+        Válvula DD está aberta, liberando 20 ulpg.
+        Dick se move para válvula CC.
+        == Minuto 4 ==
+        Válvula DD está aberta, liberando 20 ulpg.
+        Dick se move para válvula BB.
+        == Minuto 5 ==
+        Válvula DD está aberta, liberando 20 ulpg.
+        Dick abre a válvula BB.
+        == Minuto 6 ==
+        Válvulas BB e DD estão abertas, liberando 33 ulpg.
+        Dick se move para válvula AA.
+        == Minuto 7 ==
+        Válvulas BB e DD estão abertas, liberando 33 ulpg.
+        Dick se move para válvula II.
+        == Minuto 8 ==
+        Válvulas BB e DD estão abertas, liberando 33 ulpg.
+        Dick se move para válvula JJ.
+        == Minuto 9 ==
+        Válvulas BB e DD estão abertas, liberando 33 ulpg.
+        Dick abre a válvula JJ.
+        == Minuto 10 ==
+        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
+        Dick se move para válvula II.
+        == Minuto 11 ==
+        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
+        Dick se move para válvula AA.
+        == Minuto 12 ==
+        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
+        Dick se move para válvula DD.
+        == Minuto 13 ==
+        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
+        Dick se move para válvula EE.
+        == Minuto 14 ==
+        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
+        Dick se move para válvula FF.
+        == Minuto 15 ==
+        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
+        Dick se move para válvula GG.
+        == Minuto 16 ==
+        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
+        Dick se move para válvula HH.
+        == Minuto 17 ==
+        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
+        Dick abre a válvula HH.
+        == Minuto 18 ==
+        Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
+        Dick se move para válvula GG.
+        == Minuto 19 ==
+        Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
+        Dick se move para válvula FF.
+        == Minuto 20 ==
+        Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
+        Dick se move para válvula EE.
+        == Minuto 21 ==
+        Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
+        Dick abre a válvula EE.
+        == Minuto 22 ==
+        Válvulas BB, DD, EE, HH, e JJ estão abertas, liberando 79 ulpg.
+        Dick se move para válvula DD.
+        == Minuto 23 ==
+        Válvulas BB, DD, EE, HH, e JJ estão abertas, liberando 79 ulpg.
+        Dick se move para válvula CC.
+        == Minuto 24 ==
+        Válvulas BB, DD, EE, HH, e JJ estão abertas, liberando 79 ulpg.
+        Dick abre a válvula CC.
+        == Minuto 25 ==
+        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
+        == Minuto 26 ==
+        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
+        == Minuto 27 ==
+        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
+        == Minuto 28 ==
+        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
+        == Minuto 29 ==
+        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
+        == Minuto 30 ==
+        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
 
-Nessa caso, a melhor sequência de decisões seria:
+        Essa estratégia é a que maximiza a quantidade de ulpg liberado nesses 30 minutos, 1651!!!
 
-
-== Minuto 1 ==
-Nenhuma válvulas está aberta.
-Dick se move para válvula DD.
-== Minuto 2 ==
-Nenhuma válvula está aberta.
-Dick abre a válvula DD.
-== Minuto 3 ==
-Válvula DD está aberta, liberando 20 ulpg.
-Dick se move para válvula CC.
-== Minuto 4 ==
-Válvula DD está aberta, liberando 20 ulpg.
-Dick se move para válvula BB.
-== Minuto 5 ==
-Válvula DD está aberta, liberando 20 ulpg.
-Dick abre a válvula BB.
-== Minuto 6 ==
-Válvulas BB e DD estão abertas, liberando 33 ulpg.
-Dick se move para válvula AA.
-== Minuto 7 ==
-Válvulas BB e DD estão abertas, liberando 33 ulpg.
-Dick se move para válvula II.
-== Minuto 8 ==
-Válvulas BB e DD estão abertas, liberando 33 ulpg.
-Dick se move para válvula JJ.
-== Minuto 9 ==
-Válvulas BB e DD estão abertas, liberando 33 ulpg.
-Dick abre a válvula JJ.
-== Minuto 10 ==
-Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-Dick se move para válvula II.
-== Minuto 11 ==
-Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-Dick se move para válvula AA.
-== Minuto 12 ==
-Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-Dick se move para válvula DD.
-== Minuto 13 ==
-Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-Dick se move para válvula EE.
-== Minuto 14 ==
-Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-Dick se move para válvula FF.
-== Minuto 15 ==
-Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-Dick se move para válvula GG.
-== Minuto 16 ==
-Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-Dick se move para válvula HH.
-== Minuto 17 ==
-Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-Dick abre a válvula HH.
-== Minuto 18 ==
-Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
-Dick se move para válvula GG.
-== Minuto 19 ==
-Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
-Dick se move para válvula FF.
-== Minuto 20 ==
-Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
-Dick se move para válvula EE.
-== Minuto 21 ==
-Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
-Dick abre a válvula EE.
-== Minuto 22 ==
-Válvulas BB, DD, EE, HH, e JJ estão abertas, liberando 79 ulpg.
-Dick se move para válvula DD.
-== Minuto 23 ==
-Válvulas BB, DD, EE, HH, e JJ estão abertas, liberando 79 ulpg.
-Dick se move para válvula CC.
-== Minuto 24 ==
-Válvulas BB, DD, EE, HH, e JJ estão abertas, liberando 79 ulpg.
-Dick abre a válvula CC.
-== Minuto 25 ==
-Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-== Minuto 26 ==
-Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-== Minuto 27 ==
-Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-== Minuto 28 ==
-Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-== Minuto 29 ==
-Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-== Minuto 30 ==
-Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-
-Essa estratégia é a que maximiza a quantidade de ulpg liberado nesses 30 minutos, 1651!!!
-
-Ajude Dick Vigarista e Muttley a sobreviver, e descubra qual é a melhor estratégia para abrir as válvulas!
-Seguindo a melhor estratégia possível, quantos ulpg serão liberados?
+        Ajude Dick Vigarista e Muttley a sobreviver, e descubra qual é a melhor estratégia para abrir as válvulas!
+        Seguindo a melhor estratégia possível, quantos ulpg serão liberados?
 
          */
 
-        String[] tabela = Arrays.stream(inp.split("\n")).toArray(String[]::new);
+        String[] linhas = Arrays.stream(inp.split("\n")).toArray(String[]::new);
 
         long ulpg;
-        String atual = "00";
-        byte fluxo = 0;
-        var passagens = new ArrayList<String>();
 
-        var valv = new Valvula(atual, fluxo, passagens);
+        var valv = new ArrayList<Valvula>();
 
+        //salav tudo em um array list
+        for(String i : linhas){
+            String atual;
+            int fluxo;
+            var passagens = new ArrayList<String>();
+
+            atual = i.substring(i.indexOf(" ")+1, i.indexOf(" ") + 3);
+            fluxo = Integer.parseInt(i.replaceAll("\\D+", ""));
+
+            Pattern p = Pattern.compile("[A-Z]{2}");
+            Matcher m = p.matcher(i);
+
+            while (m.find()) {
+                if(!m.group().equals(atual))
+                passagens.add(m.group());
+            }
+
+            System.out.println(atual + " || " + fluxo + " || " + passagens);
+            valv.add(new Valvula(atual, fluxo, passagens, false));
+        }
+        System.out.println(valv);
+        
+        var importancia = new ArrayList<Valvula>();
+        
+        for (Valvula v : valv){
+            if (v.fluxo > 0){
+                importancia.add(v);
+            }
+        }
+        
+        //salvar todos os que tem fluxo >0 --> os que precisa abrir
+        //ordenar de maior para menor, ou seja, importancia para abrir as valvulas
+        //porem mapear os mais pertos e maior fluxo
+        
+        
+        /*
+           caminhos possiveis -> ocmpara melhor
+           se n tem fluxo -> comparar os dois ate achar o maior fluxo & se ja no esta aberta a valvula
+           if(valv.contains(v));
+           */
+        
     }
 
     //Para uso em Pombo
-    private record Valvula(String atual, byte fluxo, ArrayList<String> passagens) {
-    }
+    private record Valvula(String atual, int fluxo, ArrayList<String> passagens, boolean aberta) {}
 
 }
