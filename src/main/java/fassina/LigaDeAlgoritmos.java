@@ -1,3 +1,9 @@
+/**
+ * Author: @jf-fassina
+ * Description:
+ * A java solution for *almost* all problems at ligadealgoritmos.com
+ */
+package fassina;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -6,14 +12,14 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class LigaDeAlgoritmos {
     public static void main(String[] args) {
         // TODO--> GUI
-        String caminhoParc = "src/main/resources/";
+        String caminho = "src/main/resources/";
         // System.out.println("\nMaçãs para o Rei I");
         // macasParaOReiI();
         // System.out.println("\nMaçãs para o Rei II");
@@ -29,7 +35,7 @@ public class LigaDeAlgoritmos {
         //System.out.println("\nO Enigma da Piramide");
         //enigmaPiramide("n=342");
         //aHorda(lerInput(/*caminho + */"a_horda_input.txt"));
-        peguemOPombo(lerInput("peguem_o_pombo_input.txt"));
+        peguemOPombo(lerInput(caminho + "peguem_o_pombo_input.txt"));
     }
 
     private static String lerInput(String caminho) {
@@ -93,13 +99,13 @@ public class LigaDeAlgoritmos {
         }
 
         System.out.println(Arrays.stream(inp).map(c -> new String[]{c.substring(0, c.indexOf(" ")), c.substring(c.lastIndexOf(" ") - 1)}).collect(Collectors.collectingAndThen(Collectors.<String[]>toList(), list -> {
-                            // retira {num} iguais e conta +1 se n remover
-                            long numDistinct = list.stream().map(arr -> arr[0]).distinct().count();
-                            // retira {naipe} iguais e conta +1 se n remover
-                            long naipeDistinct = list.stream().map(arr -> arr[1]).distinct().count();
-                            return numDistinct == 1 && naipeDistinct == list.size();
-                            // true se nums unicos = 1 e naipes = 3 (todos)
-                    })) ? "É Trinca" : "Não é trinca");
+            // retira {num} iguais e conta +1 se n remover
+            long numDistinct = list.stream().map(arr -> arr[0]).distinct().count();
+            // retira {naipe} iguais e conta +1 se n remover
+            long naipeDistinct = list.stream().map(arr -> arr[1]).distinct().count();
+            return numDistinct == 1 && naipeDistinct == list.size();
+            // true se nums unicos = 1 e naipes = 3 (todos)
+        })) ? "É Trinca" : "Não é trinca");
         in.close();
     }
 
@@ -108,7 +114,7 @@ public class LigaDeAlgoritmos {
         // 150 G 300 M 550 P = max
         do {
             System.out.println("Digite o número de bolinhas Pequenas, Médias e Grandes, respectivamente");
-            inp = new java.util.Scanner(System.in).nextLine();
+            inp = new Scanner(System.in).nextLine();
         } while (!inp.matches("\\d+\\s+\\d+\\s+\\d+"));
 
         int[] nums = {Integer.parseInt(inp.substring(0, inp.indexOf(" ")).trim()), Integer.parseInt(inp.substring(inp.indexOf(" "), inp.lastIndexOf(" ")).trim()), Integer.parseInt(inp.substring(inp.lastIndexOf(" ")).trim())};
@@ -116,13 +122,13 @@ public class LigaDeAlgoritmos {
         AtomicInteger caixas = new AtomicInteger(0);
         AtomicInteger counter = new AtomicInteger(0);
         Arrays.stream(nums).forEachOrdered(n -> {
-                    int[] capacidades = {550, 300, 150};
-                    int idCaixa = counter.incrementAndGet();
-                    System.out.printf("Bolinhas: %d\t\tValor: %d\n", n, idCaixa);
+            int[] capacidades = {550, 300, 150};
+            int idCaixa = counter.incrementAndGet();
+            System.out.printf("Bolinhas: %d\t\tValor: %d\n", n, idCaixa);
 
-                    int necessarias = (int) Math.ceil((double) n / capacidades[idCaixa - 1]);
-                    caixas.set(Math.max(caixas.get(), necessarias));
-            });
+            int necessarias = (int) Math.ceil((double) n / capacidades[idCaixa - 1]);
+            caixas.set(Math.max(caixas.get(), necessarias));
+        });
 
         System.out.printf("Serão necessárias %d caixas\n", caixas.get());
 
@@ -218,25 +224,25 @@ public class LigaDeAlgoritmos {
 
         Arrays.stream(cod).forEachOrdered(c -> {
 
-                    for (int i = 0; i < 2; ) {
-                        if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140 || ciclo.get() == 180 || ciclo.get() == 220) {
-                            soma.addAndGet(ciclo.get() * dens.get());
-                        }
+            for (int i = 0; i < 2; ) {
+                if (ciclo.get() == 20 || ciclo.get() == 60 || ciclo.get() == 100 || ciclo.get() == 140 || ciclo.get() == 180 || ciclo.get() == 220) {
+                    soma.addAndGet(ciclo.get() * dens.get());
+                }
 
-                        if (c.contains("noop")) {
-                            System.out.printf("\nCiclo %d \tAção: noop", ciclo.getAndAdd(1));
-                            i = 2;
-                        } else {
-                            System.out.printf("\nCiclo %d \tAção: addx", ciclo.getAndAdd(1));
+                if (c.contains("noop")) {
+                    System.out.printf("\nCiclo %d \tAção: noop", ciclo.getAndAdd(1));
+                    i = 2;
+                } else {
+                    System.out.printf("\nCiclo %d \tAção: addx", ciclo.getAndAdd(1));
 
-                            if (i == 1)
-                                System.out.printf(" %d", dens.addAndGet(Integer.parseInt(c.substring(c.indexOf(" ") + 1))));
+                    if (i == 1)
+                        System.out.printf(" %d", dens.addAndGet(Integer.parseInt(c.substring(c.indexOf(" ") + 1))));
 
-                            i++;
-                        }
-                    }
+                    i++;
+                }
+            }
 
-            });
+        });
         System.out.printf("\nResultado da soma eh %d", soma.get());
     }
 
@@ -395,56 +401,120 @@ public class LigaDeAlgoritmos {
 
          */
 
+
+        long ulpg = 0;
+        byte tempoMax = 30; // max -> 30min --> 30  acoes)
+
+        var valvulas = new ArrayList<Valvula>();
+
+
         String[] linhas = Arrays.stream(inp.split("\n")).toArray(String[]::new);
-
-        long ulpg;
-
-        var valv = new ArrayList<Valvula>();
-
         //salav tudo em um array list
-        for(String i : linhas){
+        for (String i : linhas) {
             String atual;
             int fluxo;
             var passagens = new ArrayList<String>();
 
-            atual = i.substring(i.indexOf(" ")+1, i.indexOf(" ") + 3);
+            atual = i.substring(i.indexOf(" ") + 1, i.indexOf(" ") + 3);
             fluxo = Integer.parseInt(i.replaceAll("\\D+", ""));
 
             Pattern p = Pattern.compile("[A-Z]{2}");
             Matcher m = p.matcher(i);
 
             while (m.find()) {
-                if(!m.group().equals(atual))
-                passagens.add(m.group());
+                if (!m.group().equals(atual)) passagens.add(m.group());
             }
 
-            System.out.println(atual + " || " + fluxo + " || " + passagens);
-            valv.add(new Valvula(atual, fluxo, passagens, false));
+            var temp = new Valvula(atual, fluxo, passagens, false);
+
+            valvulas.add(temp);
+
         }
-        System.out.println(valv);
-        
-        var importancia = new ArrayList<Valvula>();
-        
-        for (Valvula v : valv){
-            if (v.fluxo > 0){
-                importancia.add(v);
+
+        // Acabei de perceber q n faz sentido.... tem q ser um while
+        /*for (Valvula vAtual : valvulas) {
+            boolean isOpen = vAtual.aberta;
+
+            //caso base --> false
+            //se a atual ta fechada ou não tem fluxo, da um ez204 nela
+            System.out.println("======");
+
+            System.out.println("ATUAL: " + vAtual.id + " || Fluxo: " + vAtual.fluxo + " || passagem: " + vAtual.passagens + " || aberta: " + vAtual.aberta);
+            vAtual.passagens.stream()
+                    //mapeia o id das passagens
+                    .map(passagem -> valvulas.stream()
+                            .filter(v -> v.id.equals(passagem))
+                            .findFirst()
+                            .orElse(null))
+                    .filter(Objects::nonNull)
+                    .forEach(v -> {
+                        //se tem fluxo e n ta aberta
+
+                        if (v.fluxo > 0 && !v.aberta) {
+                            System.out.println("Id: " + v.id + " || Fluxo: " + v.fluxo + " || passagem: " + v.passagens + " || aberta: " + v.aberta);
+                            vAtual.setAberta(true);
+                        } else {
+                            System.out.println("Id: " + v.id + " || Fluxo: " + v.fluxo + " || passagem: " + v.passagens + " || aberta: " + v.aberta);
+                            //loop até achar fluxo
+                        }
+
+                    });
+
+
+        }*/
+
+
+        int i = 0;
+        do {
+
+            String idValv = valvulas.get(i).id;
+            long fluxo = valvulas.get(i).fluxo;
+            String[] passagens = valvulas.get(i).passagens.toArray(new String[0]);
+            boolean isOpen = valvulas.get(i).aberta;
+
+            //abre a atual se estiver fechada e se tem fluxo
+            if (!isOpen && fluxo > 0) {
+                valvulas.get(0).setAberta(true);
+                tempoMax--;
+                ulpg += fluxo;
             }
-        }
-        
-        //salvar todos os que tem fluxo >0 --> os que precisa abrir
-        //ordenar de maior para menor, ou seja, importancia para abrir as valvulas
-        //porem mapear os mais pertos e maior fluxo
-        
-        
+
+            //para cada passagem
+            for (String pass : passagens) {
+                
+
+            }
+
+
+        } while (true);
+
+
         /*
            caminhos possiveis -> ocmpara melhor
            se n tem fluxo -> comparar os dois ate achar o maior fluxo & se ja no esta aberta a valvula
            if(valv.contains(v));
            */
-        
     }
 
     //Para uso em Pombo
-    private record Valvula(String atual, int fluxo, ArrayList<String> passagens, boolean aberta) {}
+    public static class Valvula {
+        String id;
+        int fluxo;
+        ArrayList<String> passagens;
+        static boolean aberta;
+
+        Valvula(String id, int fluxo, ArrayList<String> passagens, boolean aberta) {
+            this.id = id;
+            this.fluxo = fluxo;
+            this.passagens = passagens;
+            aberta = aberta;
+        }
+
+        public static void setAberta(boolean aberta) {
+            aberta = aberta;
+        }
+
+
+    }
 
 }
