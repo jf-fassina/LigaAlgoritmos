@@ -5,12 +5,18 @@
  */
 package fassina;
 
+import javax.imageio.ImageTranscoder;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -280,133 +286,57 @@ public class LigaDeAlgoritmos {
 
     }
 
+
+    private static long dfs(String atual, int tempo, Set<String> abertas, Map<String, Valvula> grafo, Map<String, Long> memo) {
+
+        if (tempo <= 0) return 0;
+
+        String chave = atual + tempo + abertas.toString();
+
+        //verifica se ja foi calculado
+        if (memo.containsKey(chave)) return memo.get(chave);
+
+
+        Valvula valvula = grafo.get(atual);
+        ExecutorService pool = Executors.newFixedThreadPool(valvula.passagens.size());
+
+        List<CompletableFuture<Long>> futuros = new ArrayList<>();
+
+        if (valvula.fluxo > 0 && !abertas.contains(atual)) {
+            Set<String> copiasAbertas = new HashSet<>(abertas);
+            copiasAbertas.add(atual);
+            long ganho = (long) valvula.fluxo * (tempo - 1);
+
+            futuros.add(CompletableFuture.supplyAsync(() -> {
+                long resultado = ganho + dfs(atual, tempo - 1, abertas, grafo, memo);
+                return ganho + resultado;
+            }, pool));
+        }
+
+        for (String prox : valvula.passagens) {
+            Set<String> copiasAbertas = new HashSet<>(abertas);
+
+            futuros.add(CompletableFuture.supplyAsync(() ->
+                    dfs(prox, tempo - 1, copiasAbertas, grafo, memo), pool
+            ));
+        }
+
+        long melhor = CompletableFuture.allOf(futuros.toArray(new CompletableFuture[0]))
+                .thenApply(_ -> futuros.stream()
+                        .map(CompletableFuture::join)
+                        .mapToLong(Long::longValue)
+                        .max()
+                        .orElse(0L)
+                ).join();
+
+        pool.shutdown();
+        return melhor;
+    }
+
+
     private static void peguemOPombo(String inp) {
-        /*
-        30 minutos pelo Pombo
-        válvulas (que liberariam a pressão do gás para a parte externa)
-        Cada válvula possui uma certa quantidade de fluxo de ULPG
-
-        Por exemplo, se no papel tivesse escrito:
-
-        Válvula AA tem fluxo de 0 ulpg/min; passagens secretas para válvulas DD, II, BB
-        Válvula BB tem fluxo de 13 ulpg/min; passagens secretas para válvulas CC, AA
-        Válvula CC tem fluxo de 2 ulpg/min; passagens secretas para válvulas DD, BB
-        Válvula DD tem fluxo de 20 ulpg/min; passagens secretas para válvulas CC, AA, EE
-        Válvula EE tem fluxo de 3 ulpg/min; passagens secretas para válvulas FF, DD
-        Válvula FF tem fluxo de 0 ulpg/min; passagens secretas para válvulas EE, GG
-        Válvula GG tem fluxo de 0 ulpg/min; passagens secretas para válvulas FF, HH
-        Válvula HH tem fluxo de 22 ulpg/min; passagem secreta pra válvula GG
-        Válvula II tem fluxo de 0 ulpg/min; passagens secretas para válvulas AA, JJ
-        Válvula JJ tem fluxo de 21 ulpg/min; passagem secreta pra válvula II
-
-        Todas as válvulas começam inicialmente fechadas
-
-        leva 1 minuto para atravessar uma passagem) e ir para a válvula BB, e abrí-la (também leva 1 minuto para abrir uma válvula).
-        Agora a válvula BB estará aberta pelos próximos 28 minutos, resultando em uma liberação de 364ulpg (28 * 13 = 364).
-        Dick agora tem alguma esperança de que seja possível escapar da armadilha do Pombo, porém ele não faz a menor ideia de como ele pode fazer isso nos 30 minutos da melhor forma possível.
-
-        Dick agora tem alguma esperança de que seja possível escapar da armadilha do Pombo, porém ele não faz a menor ideia de como ele pode fazer isso nos 30 minutos da melhor forma possível.
-
-        Nessa caso, a melhor sequência de decisões seria:
-
-        == Minuto 1 ==
-        Nenhuma válvulas está aberta.
-        Dick se move para válvula DD.
-        == Minuto 2 ==
-        Nenhuma válvula está aberta.
-        Dick abre a válvula DD.
-        == Minuto 3 ==
-        Válvula DD está aberta, liberando 20 ulpg.
-        Dick se move para válvula CC.
-        == Minuto 4 ==
-        Válvula DD está aberta, liberando 20 ulpg.
-        Dick se move para válvula BB.
-        == Minuto 5 ==
-        Válvula DD está aberta, liberando 20 ulpg.
-        Dick abre a válvula BB.
-        == Minuto 6 ==
-        Válvulas BB e DD estão abertas, liberando 33 ulpg.
-        Dick se move para válvula AA.
-        == Minuto 7 ==
-        Válvulas BB e DD estão abertas, liberando 33 ulpg.
-        Dick se move para válvula II.
-        == Minuto 8 ==
-        Válvulas BB e DD estão abertas, liberando 33 ulpg.
-        Dick se move para válvula JJ.
-        == Minuto 9 ==
-        Válvulas BB e DD estão abertas, liberando 33 ulpg.
-        Dick abre a válvula JJ.
-        == Minuto 10 ==
-        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-        Dick se move para válvula II.
-        == Minuto 11 ==
-        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-        Dick se move para válvula AA.
-        == Minuto 12 ==
-        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-        Dick se move para válvula DD.
-        == Minuto 13 ==
-        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-        Dick se move para válvula EE.
-        == Minuto 14 ==
-        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-        Dick se move para válvula FF.
-        == Minuto 15 ==
-        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-        Dick se move para válvula GG.
-        == Minuto 16 ==
-        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-        Dick se move para válvula HH.
-        == Minuto 17 ==
-        Válvulas BB, DD, e JJ estão abertas, liberando 54 ulpg.
-        Dick abre a válvula HH.
-        == Minuto 18 ==
-        Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
-        Dick se move para válvula GG.
-        == Minuto 19 ==
-        Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
-        Dick se move para válvula FF.
-        == Minuto 20 ==
-        Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
-        Dick se move para válvula EE.
-        == Minuto 21 ==
-        Válvulas BB, DD, HH, e JJ estão abertas, liberando 76 ulpg.
-        Dick abre a válvula EE.
-        == Minuto 22 ==
-        Válvulas BB, DD, EE, HH, e JJ estão abertas, liberando 79 ulpg.
-        Dick se move para válvula DD.
-        == Minuto 23 ==
-        Válvulas BB, DD, EE, HH, e JJ estão abertas, liberando 79 ulpg.
-        Dick se move para válvula CC.
-        == Minuto 24 ==
-        Válvulas BB, DD, EE, HH, e JJ estão abertas, liberando 79 ulpg.
-        Dick abre a válvula CC.
-        == Minuto 25 ==
-        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-        == Minuto 26 ==
-        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-        == Minuto 27 ==
-        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-        == Minuto 28 ==
-        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-        == Minuto 29 ==
-        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-        == Minuto 30 ==
-        Válvulas BB, CC, DD, EE, HH, e JJ estão abertas, liberando 81 ulpg.
-
-        Essa estratégia é a que maximiza a quantidade de ulpg liberado nesses 30 minutos, 1651!!!
-
-        Ajude Dick Vigarista e Muttley a sobreviver, e descubra qual é a melhor estratégia para abrir as válvulas!
-        Seguindo a melhor estratégia possível, quantos ulpg serão liberados?
-
-         */
-
-
-        long ulpg = 0;
-        byte tempoMax = 30; // max -> 30min --> 30  acoes)
 
         var valvulas = new ArrayList<Valvula>();
-
 
         String[] linhas = Arrays.stream(inp.split("\n")).toArray(String[]::new);
         //salav tudo em um array list
@@ -414,54 +344,19 @@ public class LigaDeAlgoritmos {
             String atual;
             int fluxo;
             var passagens = new ArrayList<String>();
-
             atual = i.substring(i.indexOf(" ") + 1, i.indexOf(" ") + 3);
             fluxo = Integer.parseInt(i.replaceAll("\\D+", ""));
 
             Pattern p = Pattern.compile("[A-Z]{2}");
             Matcher m = p.matcher(i);
-
             while (m.find()) {
                 if (!m.group().equals(atual)) passagens.add(m.group());
             }
 
             var temp = new Valvula(atual, fluxo, passagens, false);
-
+            if (fluxo > 0) temFluxo.add(temp);
             valvulas.add(temp);
-
         }
-
-        // Acabei de perceber q n faz sentido.... tem q ser um while
-        /*for (Valvula vAtual : valvulas) {
-            boolean isOpen = vAtual.aberta;
-
-            //caso base --> false
-            //se a atual ta fechada ou não tem fluxo, da um ez204 nela
-            System.out.println("======");
-
-            System.out.println("ATUAL: " + vAtual.id + " || Fluxo: " + vAtual.fluxo + " || passagem: " + vAtual.passagens + " || aberta: " + vAtual.aberta);
-            vAtual.passagens.stream()
-                    //mapeia o id das passagens
-                    .map(passagem -> valvulas.stream()
-                            .filter(v -> v.id.equals(passagem))
-                            .findFirst()
-                            .orElse(null))
-                    .filter(Objects::nonNull)
-                    .forEach(v -> {
-                        //se tem fluxo e n ta aberta
-
-                        if (v.fluxo > 0 && !v.aberta) {
-                            System.out.println("Id: " + v.id + " || Fluxo: " + v.fluxo + " || passagem: " + v.passagens + " || aberta: " + v.aberta);
-                            vAtual.setAberta(true);
-                        } else {
-                            System.out.println("Id: " + v.id + " || Fluxo: " + v.fluxo + " || passagem: " + v.passagens + " || aberta: " + v.aberta);
-                            //loop até achar fluxo
-                        }
-
-                    });
-
-
-        }*/
 
 
         int i = 0;
@@ -474,19 +369,51 @@ public class LigaDeAlgoritmos {
 
             //abre a atual se estiver fechada e se tem fluxo
             if (!isOpen && fluxo > 0) {
-                valvulas.get(0).setAberta(true);
+                valvulas.get(i).setAberta(true);
                 tempoMax--;
                 ulpg += fluxo;
             }
+            try {
+                int tamanho = passagens.length;
 
-            //para cada passagem
-            for (String pass : passagens) {
-                
+                //para cada passagem inicia uma thread que verifica TODAS respostas a frente e pega a com o maior valor total ulpg
+                ExecutorService pool = Executors.newFixedThreadPool(tamanho);
+                /*  ex:
+                 *  AA |caminhos : BB, CC
+                 *  BB | fluxo: 10 | caminhos: DD, CC
+                 *  CC | fluxo: 0  | caminhos: BB, FF, EE
+                 *  DD | fluxo: 2  | caminhos: EE, FF
+                 *  EE | fluxo: 15 | caminhos: DD, CC
+                 *  FF | fluxo: 20 | caminhos: CC, GG
+                 *
+                 * à partir de AA, passando por 1/3 valvulas, qual o maior ulpg?
+                 * AA -> BB(10) -> DD(2) -> FF(20) = 32
+                 * AA -> BB(10) -> CC(0) --> FF(20) = 30
+                 */
 
+                CompletableFuture<Long> futuro[] = new CompletableFuture[tamanho];
+
+                for (int j = 0; j < tamanho; j++) {
+                    final String a = passagens[j];
+                    futuro[j] = CompletableFuture.supplyAsync(() -> proxFluxo(a), pool);
+                }
+
+                Path melhor = CompletableFuture.allOf(futuro).thenApply(_ -> Arrays.stream(futuro).map(CompletableFuture::join).min(Comparator.comparingLong(Path::fluxo)).orElseThrow()).get();
+
+                //.supplyAsync(() ->{
+                //System.out.println();
+                //return 1;
+                //}, pool);
+
+
+                //System.out.println(combinado.get());
+                pool.shutdown();
+
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
             }
 
-
-        } while (true);
+        } while (tempoMax > 0);
 
 
         /*
@@ -496,22 +423,25 @@ public class LigaDeAlgoritmos {
            */
     }
 
+
+
+
     //Para uso em Pombo
     public static class Valvula {
         String id;
         int fluxo;
         ArrayList<String> passagens;
-        static boolean aberta;
+        boolean aberta;
 
         Valvula(String id, int fluxo, ArrayList<String> passagens, boolean aberta) {
             this.id = id;
             this.fluxo = fluxo;
             this.passagens = passagens;
-            aberta = aberta;
+            this.aberta = aberta;
         }
 
         public static void setAberta(boolean aberta) {
-            aberta = aberta;
+            this.aberta = aberta;
         }
 
 
